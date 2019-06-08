@@ -1,6 +1,7 @@
 List of third party libraries used by the engine:
 
-
+- Timer.h (C++)
+ttp://www.songho.ca/misc/timer/timer.html
 - GLFW                   (C language)
  https://www.glfw.org/
 
