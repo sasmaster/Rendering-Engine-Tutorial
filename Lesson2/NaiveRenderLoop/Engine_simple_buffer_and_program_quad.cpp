@@ -11,8 +11,6 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/quaternion.hpp"
 
 
 #define WIN_W 1280
@@ -154,12 +152,10 @@ int main()
       layout(location = 0) in vec3 pos;
       layout(location = 1) in vec2 uvs;
       layout(location = 2) in vec3 normals;
-        
-      layout(location = 0)uniform mat4 u_MVP;
       void main()
        {
  
-          gl_Position  = u_MVP * vec4(pos,1.0);
+          gl_Position  = vec4(pos,1.0);
        }
 
      )";
@@ -228,23 +224,6 @@ int main()
 	glDeleteShader(fragShader);
 
 
-
-	//Transformation setup:
-
-	glm::mat4 proj = glm::perspectiveFov(glm::radians(50.0f), (float)WIN_W, (float)WIN_H, 0.1f, 5000.0f);
-
-
-
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f,  -500.0f));
-	//https://paroj.github.io/gltut/Positioning/Tut08%20Quaternions.html
-	model *= glm::mat4_cast(
-		glm::angleAxis(glm::radians(45.0f) ,glm::vec3(0.0f,1.0f,0.0f))    *
-		glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f))   *
-		glm::angleAxis(glm::radians(0.0f) , glm::vec3(0.0f, 0.0f, 1.0f))
-	);
-	model = glm::scale(model,glm::vec3(100.0f,100.0f,1.0f));
-	
- 
 	//Here is the start of our naive render loop
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(win))
@@ -255,8 +234,6 @@ int main()
 		//here we render...
 
 		glUseProgram(prog);
-
-		glProgramUniformMatrix4fv(prog, 0, 1, GL_FALSE, &(proj * model)[0][0]);
 
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
