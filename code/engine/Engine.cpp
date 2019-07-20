@@ -24,18 +24,15 @@ static void ErrorCallback(int error,const char* message)
 	fprintf(stderr, "Error: %s\n", message);
 }
 
-static void GLDebugOutputCallback(GLenum source,
-	GLenum type,
-	GLuint id,
-	GLenum severity,
-	GLsizei length,
-	const GLchar* message,
-	const void* userParam)
-{
- 
-printf("GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n", (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""), type, severity, message);
 
+static void GLDebugOutputCallback(GLenum source,GLuint type,GLenum id,GLenum severity,GLsizei length,const char* message,const void* userParam)
+{
+	fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+		type, severity, message);
 }
+
+ 
  
 int main()
 {
@@ -89,23 +86,17 @@ int main()
 
 	///////////  Calling OpenGL API is fine from here
 
-
-
-
+	// GL debug ouput ...
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(GLDebugOutputCallback, nullptr);
-	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	glDebugMessageCallback(GLDebugOutputCallback,nullptr);
+ 
 
-
+	const uint32_t numVertices = 4;
 	const uint32_t bufferBindIndex = 0;
-
-	const uint32_t posAttribIndex = 0;
+	const uint32_t positionAttribIndex = 0;
 	const uint32_t uvAttribIndex = 1;
 	const uint32_t normalAttribIndex = 2;
-	const uint32_t numVertices = 4;
-
-	//Create and configure our vertex buffer
 	struct Vertex
 	{
 		glm::vec3 position;
@@ -114,15 +105,16 @@ int main()
 	};
 
 	Vertex vertices[numVertices] = {
-		{glm::vec3(0.5f,0.5f,0.0f),glm::vec2(1.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)},
-		{glm::vec3(-0.5f,0.5f,0.0f),glm::vec2(1.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)},
-		{glm::vec3(-0.5f,-0.5f,0.0f),glm::vec2(1.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)},
-		{glm::vec3(0.5f,-0.5f,0.0f),glm::vec2(1.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)}	
+	
+		{glm::vec3(0.5f,0.5f,0.0f)  ,glm::vec2(1.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)},
+		{glm::vec3(-0.5f,0.5f,0.0f) ,glm::vec2(0.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)},
+		{glm::vec3(-0.5f,-0.5f,0.0f),glm::vec2(0.0f,0.0f),glm::vec3(0.0f,0.0f,1.0f)},
+		{glm::vec3(0.5f,-0.5f,0.0f) ,glm::vec2(1.0f,0.0f),glm::vec3(0.0f,0.0f,1.0f)}
+	
 	};
 
- 
 
-	GLuint  vertexArrayObject, vertexBufferObject;
+	GLuint vertexArrayObject, vertexBufferObject;
 
 	glCreateVertexArrays(1, &vertexArrayObject);
 	glBindVertexArray(vertexArrayObject);
@@ -131,119 +123,24 @@ int main()
 	glBindVertexBuffer(bufferBindIndex, vertexBufferObject, 0, sizeof(Vertex));
 	glNamedBufferStorage(vertexBufferObject, numVertices * sizeof(Vertex), vertices, GL_MAP_WRITE_BIT);
 
-	glEnableVertexAttribArray(posAttribIndex);
+
+	glEnableVertexAttribArray(positionAttribIndex);
 	glEnableVertexAttribArray(uvAttribIndex);
 	glEnableVertexAttribArray(normalAttribIndex);
 
-	//position attribute
-	glVertexAttribFormat(posAttribIndex, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
-	glVertexAttribBinding(posAttribIndex, bufferBindIndex);
+	//position attrib:
+	glVertexAttribFormat(positionAttribIndex, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+	glVertexAttribBinding(positionAttribIndex, bufferBindIndex);
 
-	//uvs attribute
-	glVertexAttribFormat(uvAttribIndex, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, uvs));
+	//uvs attrib:
+	glVertexAttribFormat(uvAttribIndex,2, GL_FLOAT, GL_FALSE, offsetof(Vertex, uvs));
 	glVertexAttribBinding(uvAttribIndex, bufferBindIndex);
 
-	//normals attribute
+	//normals attrib:
 	glVertexAttribFormat(normalAttribIndex, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normals));
 	glVertexAttribBinding(normalAttribIndex, bufferBindIndex);
 
 
-
-	const char* vertShaderStr = R"(#version 450
-     
-      layout(location = 0) in vec3 pos;
-      layout(location = 1) in vec2 uvs;
-      layout(location = 2) in vec3 normals;
-        
-      layout(location = 0)uniform mat4 u_MVP;
-      void main()
-       {
- 
-          gl_Position  = u_MVP * vec4(pos,1.0);
-       }
-
-     )";
-
-
-	const char* fragShaderStr = R"(#version 450
-     
-      out vec4 PIXEL;
-      void main()
-       {
- 
-          PIXEL = vec4(0.0,1.0,0.0,1.0);
-       }
-     )";
-
-
-	GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
-	GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-	GLuint prog = glCreateProgram();
-	glShaderSource(vertShader, 1,&vertShaderStr,NULL);
-	glCompileShader(vertShader);
-
-	GLint isCompiled = 0;
-	glGetShaderiv(vertShader, GL_COMPILE_STATUS, &isCompiled);
-	if (GL_FALSE == isCompiled)
-	{
-		GLint maxLength = 0;
-		glGetShaderiv(vertShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-		// The maxLength includes the NULL character
-		char* infoLog =(char*) malloc(maxLength);
-		glGetShaderInfoLog(vertShader, maxLength, &maxLength, &infoLog[0]);
-
-		printf("Vertex shader failed to compile with error: %s\n", infoLog);
-		free(infoLog);
-		// We don't need the shader anymore.
-		glDeleteShader(vertShader);
-	}
-
-
-	glShaderSource(fragShader, 1, &fragShaderStr, NULL);
-	glCompileShader(fragShader);
-	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &isCompiled);
-	if (GL_FALSE == isCompiled)
-	{
-		GLint maxLength = 0;
-		glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &maxLength);
-
-		// The maxLength includes the NULL character
-		char* infoLog = (char*)malloc(maxLength);
-		glGetShaderInfoLog(fragShader, maxLength, &maxLength, &infoLog[0]);
-
-		printf("Fragment shader failed to compile with error: %s\n", infoLog);
-		free(infoLog);
-		// We don't need the shader anymore.
-		glDeleteShader(fragShader);
-	}
-
-
-	glAttachShader(prog, vertShader);
-	glAttachShader(prog, fragShader);
-	glLinkProgram(prog);
-	glDetachShader(prog, vertShader);
-	glDetachShader(prog, fragShader);
-	glDeleteShader(vertShader);
-	glDeleteShader(fragShader);
-
-
-
-	//Transformation setup:
-
-	glm::mat4 proj = glm::perspectiveFov(glm::radians(50.0f), (float)WIN_W, (float)WIN_H, 0.1f, 5000.0f);
-
-
-
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f,  -500.0f));
-	//https://paroj.github.io/gltut/Positioning/Tut08%20Quaternions.html
-	model *= glm::mat4_cast(
-		glm::angleAxis(glm::radians(45.0f) ,glm::vec3(0.0f,1.0f,0.0f))    *
-		glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f))   *
-		glm::angleAxis(glm::radians(0.0f) , glm::vec3(0.0f, 0.0f, 1.0f))
-	);
-	model = glm::scale(model,glm::vec3(100.0f,100.0f,1.0f));
-	
  
 	//Here is the start of our naive render loop
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
@@ -251,16 +148,7 @@ int main()
 	{
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//here we render...
-
-		glUseProgram(prog);
-
-		glProgramUniformMatrix4fv(prog, 0, 1, GL_FALSE, &(proj * model)[0][0]);
-
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-
+ 
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 	}
