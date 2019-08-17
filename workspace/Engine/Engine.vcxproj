@@ -104,7 +104,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;SGE_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -162,11 +162,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h" />
+    <ClCompile Include="..\..\code\engine\Engine.cpp" />
+    <ClCompile Include="..\..\code\engine\GraphicsAPI.cpp" />
+    <ClCompile Include="..\..\thirdparty\glad\src\glad.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\code\engine\Engine.cpp" />
-    <ClCompile Include="..\..\thirdparty\glad\src\glad.c" />
+    <ClInclude Include="..\..\code\engine\Engine.h" />
+    <ClInclude Include="..\..\code\engine\GraphicsAPI.h" />
+    <ClInclude Include="..\..\thirdparty\timer\Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

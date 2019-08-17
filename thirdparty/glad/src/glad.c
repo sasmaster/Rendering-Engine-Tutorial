@@ -150,12 +150,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <glad/glad.h>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+#include "glad/glad.h"
 
 static void* get_proc(const char *namez);
 
 #if defined(_WIN32) || defined(__CYGWIN__)
-#include <windows.h>
+//#include <windows.h>
 static HMODULE libGL;
 
 typedef void* (APIENTRYP PFNWGLGETPROCADDRESSPROC_PRIVATE)(const char*);

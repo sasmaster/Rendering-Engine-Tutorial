@@ -16,7 +16,7 @@
 #define TIMER_H_DEF
 
 #if defined(WIN32) || defined(_WIN32)   // Windows system specific
-#include <windows.h>
+#include <Windows.h>
 #else          // Unix based system specific
 #include <sys/time.h>
 #endif
