@@ -1,9 +1,7 @@
 // Engine.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
+#include "Engine.h"
 
 #include "Timer.h"
 
@@ -14,10 +12,12 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/quaternion.hpp"
 
+#include "GraphicsAPI.h"
 
 #define WIN_W 1280
 #define WIN_H 720
 
+using namespace sge;
 
 static void ErrorCallback(int error,const char* message)
 {
@@ -82,7 +82,10 @@ int main()
 		printf("Failed to load GL API\n");
 		exit(EXIT_FAILURE);
 	}
+ 
+	GraphicsAPI::Create();
 
+ 
 
 	///////////  Calling OpenGL API is fine from here
 
@@ -141,13 +144,68 @@ int main()
 	glVertexAttribBinding(normalAttribIndex, bufferBindIndex);
 
 
+	//shaders
+
+	const char* vertexShaderStr = R"(#version 450
+       
+      layout(location = 0) in vec3 pos;
+      layout(location = 1) in vec2 uvs;
+      layout(location = 2) in vec3 normals; 
+         
+      layout(location = 0) uniform mat4 u_MVP;
  
+      out smooth vec2 v_uvs;
+      void main()
+      {
+         v_uvs = uvs;
+         gl_Position = u_MVP * vec4(pos,1.0);
+      }
+ 
+          
+   )";
+
+	const char* fragShaderStr = R"(#version 450
+       in smooth vec2 v_uvs;
+       out vec4 PIXEL;
+
+       void main()
+       {
+           PIXEL = vec4(0.0,1.0,0.0,1.0); 
+       }
+
+   )";
+
+
+    GLuint prog = graphicsAPI->CompileShaderProgram(vertexShaderStr, fragShaderStr);
+	
+
+	glm::mat4 proj = glm::perspectiveFov(glm::radians(50.0f), (float)WIN_W, (float)WIN_H, 0.1f, 5000.0f);
+
+	//T>R>S
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -100.0f));
+	model *= glm::mat4_cast(
+
+		//Pitch,Yaw,Roll.
+		//Y,P,R
+		glm::angleAxis(glm::radians(45.0f),glm::vec3(0.0,1.0f,0.0f))   *
+		glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0, 0.0f, 0.0f)) *
+		glm::angleAxis(glm::radians(0.0f), glm::vec3(0.0, 0.0f, 1.0f))
+	);
+	 
+	model = glm::scale(model,glm::vec3(100.0f,100.0f,1.0f));
+
 	//Here is the start of our naive render loop
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(win))
 	{
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		//here we render...
+
+		glUseProgram(prog);
+		glProgramUniformMatrix4fv(prog, 0, 1, GL_FALSE, &(proj * model)[0][0]);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
  
 		glfwSwapBuffers(win);
 		glfwPollEvents();

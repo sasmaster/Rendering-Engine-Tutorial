@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\code\engine\Engine.h" />
     <ClInclude Include="..\..\code\engine\GraphicsAPI.h" />
+    <ClInclude Include="..\..\code\engine\stb_image.h" />
     <ClInclude Include="..\..\thirdparty\timer\Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

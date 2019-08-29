@@ -1777,6 +1777,9 @@ PFNGLVIDEOCAPTURESTREAMPARAMETERIVNVPROC glad_glVideoCaptureStreamParameterivNV 
 PFNGLVIDEOCAPTURESTREAMPARAMETERFVNVPROC glad_glVideoCaptureStreamParameterfvNV = NULL;
 PFNGLVIDEOCAPTURESTREAMPARAMETERDVNVPROC glad_glVideoCaptureStreamParameterdvNV = NULL;
 PFNGLVIEWPORTSWIZZLENVPROC glad_glViewportSwizzleNV = NULL;
+PFNGLBINDMULTITEXTUREEXT  glad_BindMultiTextureEXT = NULL;
+
+
 static void load_GL_VERSION_1_0(GLADloadproc load) {
 	if(!GLAD_GL_VERSION_1_0) return;
 	glad_glCullFace = (PFNGLCULLFACEPROC)load("glCullFace");
@@ -2529,6 +2532,8 @@ static void load_GL_VERSION_4_5(GLADloadproc load) {
 	glad_glGetnHistogram = (PFNGLGETNHISTOGRAMPROC)load("glGetnHistogram");
 	glad_glGetnMinmax = (PFNGLGETNMINMAXPROC)load("glGetnMinmax");
 	glad_glTextureBarrier = (PFNGLTEXTUREBARRIERPROC)load("glTextureBarrier");
+	//Added
+	glad_BindMultiTextureEXT = (PFNGLBINDMULTITEXTUREEXT)load("glBindMultiTextureEXT");
 }
 static void load_GL_VERSION_4_6(GLADloadproc load) {
 	if(!GLAD_GL_VERSION_4_6) return;

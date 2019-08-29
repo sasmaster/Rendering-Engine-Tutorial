@@ -1,49 +1,48 @@
 // Engine.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include "Engine.h"
+
+#include "Timer.h"
 
 
-#include "GraphicsAPI.h"
-
-//must include after OGL API loader otherwise complains about GL headers re-include
+#include "glad/glad.h"
 #include "GLFW/glfw3.h"
-
-
-
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/quaternion.hpp"
 
+#include "GraphicsAPI.h"
 
-#include "Timer.h"
 
 
 #define WIN_W 1280
 #define WIN_H 720
 
+using namespace sge;
 
-static void ErrorCallback(int error, const char* message)
+static void ErrorCallback(int error,const char* message)
 {
 	fprintf(stderr, "Error: %s\n", message);
 }
 
 
-static void GLDebugOutputCallback(GLenum source, GLuint type, GLenum id, GLenum severity, GLsizei length, const char* message, const void* userParam)
+static void GLDebugOutputCallback(GLenum source,GLuint type,GLenum id,GLenum severity,GLsizei length,const char* message,const void* userParam)
 {
 	fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
 		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
 		type, severity, message);
 }
 
-
-using namespace sge;
+ 
+ 
 int main()
 {
-	 Timer timer;
+	Timer timer;
 	timer.start();
-	const double tStart = timer.getElapsedTimeInSec(); 
+	const double tStart = timer.getElapsedTimeInSec();
 
-
+	 
 	glfwSetErrorCallback(ErrorCallback);
 
 	if (!glfwInit())
@@ -85,22 +84,18 @@ int main()
 		printf("Failed to load GL API\n");
 		exit(EXIT_FAILURE);
 	}
+ 
+	GraphicsAPI::Create();
 
-	// Init Graphics API //
-	if (!GraphicsAPI::Create())
-	{
-		printf("Failed to create graphics API\n");
-		exit(EXIT_FAILURE);
-	}
-
+ 
 
 	///////////  Calling OpenGL API is fine from here
 
 	// GL debug ouput ...
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(GLDebugOutputCallback, nullptr);
-
+	glDebugMessageCallback(GLDebugOutputCallback,nullptr);
+ 
 
 	const uint32_t numVertices = 4;
 	const uint32_t bufferBindIndex = 0;
@@ -115,12 +110,12 @@ int main()
 	};
 
 	Vertex vertices[numVertices] = {
-
+	
 		{glm::vec3(0.5f,0.5f,0.0f)  ,glm::vec2(1.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)},
 		{glm::vec3(-0.5f,0.5f,0.0f) ,glm::vec2(0.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)},
 		{glm::vec3(-0.5f,-0.5f,0.0f),glm::vec2(0.0f,0.0f),glm::vec3(0.0f,0.0f,1.0f)},
 		{glm::vec3(0.5f,-0.5f,0.0f) ,glm::vec2(1.0f,0.0f),glm::vec3(0.0f,0.0f,1.0f)}
-
+	
 	};
 
 
@@ -143,7 +138,7 @@ int main()
 	glVertexAttribBinding(positionAttribIndex, bufferBindIndex);
 
 	//uvs attrib:
-	glVertexAttribFormat(uvAttribIndex, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, uvs));
+	glVertexAttribFormat(uvAttribIndex,2, GL_FLOAT, GL_FALSE, offsetof(Vertex, uvs));
 	glVertexAttribBinding(uvAttribIndex, bufferBindIndex);
 
 	//normals attrib:
@@ -173,20 +168,29 @@ int main()
 
 	const char* fragShaderStr = R"(#version 450
        in smooth vec2 v_uvs;
+
+       layout(binding = 0)uniform sampler2D colorMap;
        out vec4 PIXEL;
 
        void main()
        {
-           PIXEL = vec4(0.0,1.0,0.0,1.0); 
+          PIXEL = texture(colorMap, v_uvs);
        }
 
    )";
 
+	
+
+	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png");
 
 
-	GLuint prog = graphicsAPI->CompileShaderProgram(vertexShaderStr, fragShaderStr);
+	//....  upload to gpu 
+
+	
 
 
+    GLuint prog = graphicsAPI->CompileShaderProgram(vertexShaderStr, fragShaderStr);
+	
 
 	glm::mat4 proj = glm::perspectiveFov(glm::radians(50.0f), (float)WIN_W, (float)WIN_H, 0.1f, 5000.0f);
 
@@ -196,13 +200,13 @@ int main()
 
 		//Pitch,Yaw,Roll.
 		//Y,P,R
-		glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0, 1.0f, 0.0f))   *
+		glm::angleAxis(glm::radians(45.0f),glm::vec3(0.0,1.0f,0.0f))   *
 		glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0, 0.0f, 0.0f)) *
 		glm::angleAxis(glm::radians(0.0f), glm::vec3(0.0, 0.0f, 1.0f))
 	);
-
-	model = glm::scale(model, glm::vec3(100.0f, 100.0f, 1.0f));
-
+	 
+	model = glm::scale(model,glm::vec3(100.0f,100.0f,1.0f));
+	//glBindTexture(GL_TEXTURE_2D, texture.handle);
 	//Here is the start of our naive render loop
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(win))
@@ -213,9 +217,12 @@ int main()
 		//here we render...
 
 		glUseProgram(prog);
+
+		glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D, texture.handle);
+	
 		glProgramUniformMatrix4fv(prog, 0, 1, GL_FALSE, &(proj * model)[0][0]);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
+ 
 		glfwSwapBuffers(win);
 		glfwPollEvents();
 	}
@@ -224,8 +231,8 @@ int main()
 	glfwDestroyWindow(win);
 	glfwTerminate();
 
-
-	 printf("Time total on exit %f seconds\n", timer.getElapsedTimeInSec() - tStart);
+  
+	printf("Time total on exit %f seconds\n", timer.getElapsedTimeInSec() - tStart);
 	return EXIT_SUCCESS;
 }
 

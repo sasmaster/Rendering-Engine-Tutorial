@@ -26,13 +26,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\code\engine\GraphicsAPI.h">
+    <ClInclude Include="..\..\thirdparty\timer\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\code\engine\Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\thirdparty\timer\Timer.h">
+    <ClInclude Include="..\..\code\engine\GraphicsAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\code\engine\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

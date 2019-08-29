@@ -3802,6 +3802,12 @@ typedef void (APIENTRYP PFNGLPOLYGONOFFSETCLAMPPROC)(GLfloat factor, GLfloat uni
 GLAPI PFNGLPOLYGONOFFSETCLAMPPROC glad_glPolygonOffsetClamp;
 #define glPolygonOffsetClamp glad_glPolygonOffsetClamp
 #endif
+ 
+//Added BindMultiTextureEXT
+typedef void (APIENTRYP PFNGLBINDMULTITEXTUREEXT)(GLenum texunit, GLenum target, GLuint texture);
+GLAPI PFNGLBINDMULTITEXTUREEXT glad_BindMultiTextureEXT;
+#define glBindMultiTextureEXT glad_BindMultiTextureEXT
+
 #define GL_MULTIPLY_KHR 0x9294
 #define GL_SCREEN_KHR 0x9295
 #define GL_OVERLAY_KHR 0x9296

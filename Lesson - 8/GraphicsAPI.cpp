@@ -1,8 +1,6 @@
 #include "GraphicsAPI.h"
 
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
 namespace sge
 {
@@ -94,45 +92,6 @@ namespace sge
 
 		return prog;
 
-	}
-
-
-	Texture GraphicsAPI::LoadTexture(const char* path)
-	{
-		int comp = 0;
-		int w = 0;
-		int h = 0;
-
-		stbi_set_flip_vertically_on_load(1);
-	    uint8_t* buff =	stbi_load(path, &w, &h, &comp, STBI_rgb_alpha);
-		SGE_ASSERT(buff);
-
-		Texture tex =  CreateTexture(buff,w,h);
-
-		stbi_image_free(buff);
-
-		return tex;
-	}
-
-	Texture GraphicsAPI::CreateTexture(const uint8_t* buffer,const uint32_t width,const uint32_t height)
-	{
-		 
-		Texture tex;
-		tex.width = width;
-		tex.height = height;
-
-		glCreateTextures(GL_TEXTURE_2D, 1, &tex.handle);
-
-		glTextureStorage2D(tex.handle, 1, GL_RGBA8, width, height);
-
-		glTextureSubImage2D(tex.handle, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-
-		glTextureParameteri(tex.handle, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTextureParameteri(tex.handle, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-
-
-		return tex;
 	}
 
 	GraphicsAPI::~GraphicsAPI()

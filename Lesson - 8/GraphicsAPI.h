@@ -4,16 +4,9 @@
 #include "Engine.h"
 
 #include "glad/glad.h"
-#include <stdint.h>
+
 namespace sge
 {
-
-	struct Texture
-	{
-		uint32_t handle  = 0; //GPU handle
-		uint32_t width   = 0;
-		uint32_t height  = 0;
-	};
 
 	class GraphicsAPI
 	{
@@ -30,13 +23,6 @@ namespace sge
 
 
 		GLuint CompileShaderProgram(const char* vertStr,const char* fragStr);
-
-		/**
-		* The caller must deallocate buffer after used.
-		*/
-		Texture LoadTexture(const char* path);
-
-		Texture CreateTexture(const uint8_t* buffer, const uint32_t width, const uint32_t height);
 	
 		~GraphicsAPI();
 
