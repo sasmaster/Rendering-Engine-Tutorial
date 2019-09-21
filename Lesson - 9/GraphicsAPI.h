@@ -34,9 +34,9 @@ namespace sge
 		/**
 		* The caller must deallocate buffer after used.
 		*/
-		Texture LoadTexture(const char* path, const bool mipmaps);
+		Texture LoadTexture(const char* path);
 
-		Texture CreateTexture(const uint8_t* buffer, const uint32_t width, const uint32_t height,const bool mipmaps);
+		Texture CreateTexture(const uint8_t* buffer, const uint32_t width, const uint32_t height);
 	
 		~GraphicsAPI();
 

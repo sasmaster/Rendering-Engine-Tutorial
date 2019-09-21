@@ -179,9 +179,9 @@ int main()
 
    )";
 
-	 
+	
 
-	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png",true);
+	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png");
 
 
 	//....  upload to gpu 
@@ -192,7 +192,7 @@ int main()
 	glm::mat4 proj = glm::perspectiveFov(glm::radians(50.0f), (float)WIN_W, (float)WIN_H, 0.1f, 5000.0f);
 
 	//T>R>S
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1000.0f));
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -100.0f));
 	
 	model *= glm::mat4_cast(
 
