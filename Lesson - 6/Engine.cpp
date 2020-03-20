@@ -14,8 +14,6 @@
 
 #include "GraphicsAPI.h"
 
-
-
 #define WIN_W 1280
 #define WIN_H 720
 
@@ -168,23 +166,15 @@ int main()
 
 	const char* fragShaderStr = R"(#version 450
        in smooth vec2 v_uvs;
-
-       layout(binding = 0)uniform sampler2D colorMap;
-
        out vec4 PIXEL;
+
        void main()
        {
-          PIXEL = texture(colorMap, v_uvs);
+           PIXEL = vec4(0.0,1.0,0.0,1.0); 
        }
 
    )";
 
-	 
-
-	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png",false);
-
-
-	//....  upload to gpu 
 
     GLuint prog = graphicsAPI->CompileShaderProgram(vertexShaderStr, fragShaderStr);
 	
@@ -192,8 +182,7 @@ int main()
 	glm::mat4 proj = glm::perspectiveFov(glm::radians(50.0f), (float)WIN_W, (float)WIN_H, 0.1f, 5000.0f);
 
 	//T>R>S
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1000.0f));
-	
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -100.0f));
 	model *= glm::mat4_cast(
 
 		//Pitch,Yaw,Roll.
@@ -204,7 +193,7 @@ int main()
 	);
 	 
 	model = glm::scale(model,glm::vec3(100.0f,100.0f,1.0f));
-	//glBindTexture(GL_TEXTURE_2D, texture.handle);
+
 	//Here is the start of our naive render loop
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	while (!glfwWindowShouldClose(win))
@@ -215,9 +204,6 @@ int main()
 		//here we render...
 
 		glUseProgram(prog);
-
-		glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D, texture.handle);
-	
 		glProgramUniformMatrix4fv(prog, 0, 1, GL_FALSE, &(proj * model)[0][0]);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
  

@@ -142,6 +142,7 @@ namespace sge
 		glTextureParameteri(tex.handle, GL_TEXTURE_MIN_FILTER, minFilter);
 
 		glTextureParameteri(tex.handle, GL_TEXTURE_BASE_LEVEL, 0);
+
 		glTextureParameteri(tex.handle, GL_TEXTURE_MAX_LEVEL, numMipmaps - 1);
 
 		if (mipmaps)

@@ -181,7 +181,7 @@ int main()
 
 	 
 
-	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png",true);
+	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png",false);
 
 
 	//....  upload to gpu 
