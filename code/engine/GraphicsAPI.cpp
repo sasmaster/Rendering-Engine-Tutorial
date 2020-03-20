@@ -125,6 +125,7 @@ namespace sge
 	 
 		GLsizei numMipmaps = 1;
 		GLint minFilter = GL_LINEAR;
+
 		if (mipmaps)
 		{
 			

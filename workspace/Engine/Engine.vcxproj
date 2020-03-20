@@ -164,11 +164,15 @@
   <ItemGroup>
     <ClCompile Include="..\..\code\engine\Engine.cpp" />
     <ClCompile Include="..\..\code\engine\GraphicsAPI.cpp" />
+    <ClCompile Include="..\..\code\engine\RenderContext.cpp" />
+    <ClCompile Include="..\..\code\engine\SceneNode.cpp" />
     <ClCompile Include="..\..\thirdparty\glad\src\glad.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\code\engine\Engine.h" />
     <ClInclude Include="..\..\code\engine\GraphicsAPI.h" />
+    <ClInclude Include="..\..\code\engine\RenderContext.h" />
+    <ClInclude Include="..\..\code\engine\SceneNode.h" />
     <ClInclude Include="..\..\code\engine\stb_image.h" />
     <ClInclude Include="..\..\thirdparty\timer\Timer.h" />
   </ItemGroup>
