@@ -4,32 +4,21 @@
 
 #include "glm/glm.hpp"
 
-#include <vector>
-
 namespace sge
 {
 	class SceneNode
 	{
 
-		SceneNode*              mParent;
-		std::vector<SceneNode*> mChildren;
 		glm::vec3 mPosition;
 		glm::vec3 mRotation;
 		glm::vec3 mScale;
 
 		glm::mat4 mWorldMatrix;
-		bool      mTransformDirty;
-		char mName[64];
+
 
 	public:
 
 		SceneNode();
-
-		void AddNode(SceneNode* childNode);
-
-		void RemoveNode(SceneNode* childNode);
-
-		void SetName(const char* name);
 
 		void SetPosition(float x,float y,float z);
 
@@ -44,7 +33,7 @@ namespace sge
 		}
 
 
-		void UpdateTransform(const glm::mat4& parent,bool dirtyFlag);
+		void UpdateTransform(const glm::mat4& parent);
 
 		~SceneNode();
 

@@ -12,7 +12,6 @@
 
 #include "GraphicsAPI.h"
 #include "SceneNode.h"
-#include "Geometry.h"
 
 
 
@@ -39,8 +38,18 @@ int main()
 
  
 
-
 	const uint32_t numVertices = 4;
+	const uint32_t bufferBindIndex = 0;
+	const uint32_t positionAttribIndex = 0;
+	const uint32_t uvAttribIndex = 1;
+	const uint32_t normalAttribIndex = 2;
+	struct Vertex
+	{
+		glm::vec3 position;
+		glm::vec2 uvs;
+		glm::vec3 normals;
+	};
+
 	Vertex vertices[numVertices] = {
 	
 		{glm::vec3(0.5f,0.5f,0.0f)  ,glm::vec2(1.0f,1.0f),glm::vec3(0.0f,0.0f,1.0f)},
@@ -50,12 +59,33 @@ int main()
 	
 	};
 
-	Geometry geom;
 
-	geom.Create(GL_TRIANGLE_FAN,vertices, numVertices);
+	GLuint vertexArrayObject, vertexBufferObject;
+
+	glCreateVertexArrays(1, &vertexArrayObject);
+	glBindVertexArray(vertexArrayObject);
+
+	glCreateBuffers(1, &vertexBufferObject);
+	glBindVertexBuffer(bufferBindIndex, vertexBufferObject, 0, sizeof(Vertex));
+	glNamedBufferStorage(vertexBufferObject, numVertices * sizeof(Vertex), vertices, GL_MAP_WRITE_BIT);
 
 
-	
+	glEnableVertexAttribArray(positionAttribIndex);
+	glEnableVertexAttribArray(uvAttribIndex);
+	glEnableVertexAttribArray(normalAttribIndex);
+
+	//position attrib:
+	glVertexAttribFormat(positionAttribIndex, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+	glVertexAttribBinding(positionAttribIndex, bufferBindIndex);
+
+	//uvs attrib:
+	glVertexAttribFormat(uvAttribIndex,2, GL_FLOAT, GL_FALSE, offsetof(Vertex, uvs));
+	glVertexAttribBinding(uvAttribIndex, bufferBindIndex);
+
+	//normals attrib:
+	glVertexAttribFormat(normalAttribIndex, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normals));
+	glVertexAttribBinding(normalAttribIndex, bufferBindIndex);
+
 
 	//shaders
 
@@ -102,48 +132,18 @@ int main()
 
 	glm::mat4 proj = glm::perspectiveFov(glm::radians(50.0f), (float)WIN_W, (float)WIN_H, 0.1f, 5000.0f);
 
-	SceneNode rootNode; // root node
-	rootNode.SetName("Root node");
+	SceneNode node1;
 
-	rootNode.SetPosition(0.0f, 0.0f, -1000.0f);
-	rootNode.SetRotation(0.0f, 45.0f, 0.0f);
-	rootNode.SetScale(100.0f, 100.0f, 1.0f);
+	node1.SetPosition(0.0f, 0.0f, -1000.0f);
+	node1.SetRotation(0.0f, 45.0f, 0.0f);
+	node1.SetScale(100.0f, 100.0f, 1.0f);
 
-	SceneNode node1; // root node
-	node1.SetName("node A");
-	SceneNode node2; // root node
-	node2.SetName("node B");
-	SceneNode node3; // root node
-	node3.SetName("node C");
-	SceneNode node4; // root node
-	node4.SetName("node D");
-
-	rootNode.AddNode(&node1);
-	rootNode.AddNode(&node2);
-	node1.AddNode(&node3);
-	node2.AddNode(&node4);
-
-
-	rootNode.UpdateTransform(glm::mat4(1.0f),false);
-
-	rootNode.UpdateTransform(glm::mat4(1.0f), false);
-
-
-	node2.RemoveNode(&node4);
-
-
-	rootNode.UpdateTransform(glm::mat4(1.0f), true);
-
-
-
+	node1.UpdateTransform(glm::mat4(1.0f));
 
 	
 	//glBindTexture(GL_TEXTURE_2D, texture.handle);
 	//Here is the start of our naive render loop
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-
-	glBindVertexArray(geom.vertexArrayObject);
-
 	while (!renderContext.OnWindowClosing())
 	{
 	
@@ -151,14 +151,12 @@ int main()
 
 		//here we render...
 
-
 		glUseProgram(prog);
 
 		glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D, texture.handle);
 	
 		glProgramUniformMatrix4fv(prog, 0, 1, GL_FALSE, &(proj * node1.GetWorldMatrix())[0][0]);
-
-		glDrawArrays(GL_TRIANGLE_FAN, 0, geom.mNumVertices);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
  
 		renderContext.SwapBuffers();
 	}
