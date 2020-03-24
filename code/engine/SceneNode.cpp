@@ -51,19 +51,22 @@ namespace sge
 	void SceneNode::SetPosition(float x, float y, float z)
 	{
 		mPosition = glm::vec3(x,y,z);
+		mTransformDirty = true;
 	}
 
 	void SceneNode::SetRotation(float x, float y, float z)
 	{
 		mRotation = glm::vec3(x,y,z);
+		mTransformDirty = true;
 	}
 
 	void SceneNode::SetScale(float x, float y, float z)
 	{
 		mScale = glm::vec3(x,y,z);
+		mTransformDirty = true;
 	}
 
-	static uint32_t order = 0;
+	 
 	void SceneNode::UpdateTransform(const glm::mat4& parent, bool dirtyFlag)
 	{
 
@@ -71,8 +74,8 @@ namespace sge
 
 		if (dirtyFlag)
 		{
-			printf("processing node %s  %i\n",mName, order);
-			order++;
+			//printf("processing node %s  %i\n",mName);
+			 
 			//T>R>S
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), mPosition);
 
