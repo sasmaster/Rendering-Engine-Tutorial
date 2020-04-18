@@ -78,8 +78,6 @@ int main()
 
 	CameraNode* camera = mainScene.CreateSceneNode<CameraNode>();
 	camera->Init(54.0f, WIN_W, WIN_H, 0.1f, 5000.0f);
-
-	//camera->SetPosition(200.0f, 0.0f, 0.0f);
 	 
 	mainScene.AddNode(camera);
 	mainScene.SetCurrentCamera(camera);

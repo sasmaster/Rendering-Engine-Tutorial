@@ -163,18 +163,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\code\engine\CameraNode.cpp" />
     <ClCompile Include="..\..\code\engine\Engine.cpp" />
     <ClCompile Include="..\..\code\engine\Geometry.cpp" />
     <ClCompile Include="..\..\code\engine\GraphicsAPI.cpp" />
+    <ClCompile Include="..\..\code\engine\MeshNode.cpp" />
     <ClCompile Include="..\..\code\engine\RenderContext.cpp" />
+    <ClCompile Include="..\..\code\engine\Renderer.cpp" />
+    <ClCompile Include="..\..\code\engine\Scene.cpp" />
     <ClCompile Include="..\..\code\engine\SceneNode.cpp" />
     <ClCompile Include="..\..\thirdparty\glad\src\glad.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\code\engine\CameraNode.h" />
     <ClInclude Include="..\..\code\engine\Engine.h" />
     <ClInclude Include="..\..\code\engine\Geometry.h" />
     <ClInclude Include="..\..\code\engine\GraphicsAPI.h" />
+    <ClInclude Include="..\..\code\engine\MeshNode.h" />
     <ClInclude Include="..\..\code\engine\RenderContext.h" />
+    <ClInclude Include="..\..\code\engine\Renderer.h" />
+    <ClInclude Include="..\..\code\engine\Scene.h" />
     <ClInclude Include="..\..\code\engine\SceneNode.h" />
     <ClInclude Include="..\..\code\engine\stb_image.h" />
     <ClInclude Include="..\..\thirdparty\timer\Timer.h" />
