@@ -10,11 +10,14 @@ namespace sge
 	class MeshNode final: public SceneNode
 	{
 		friend class Scene;
+
 		Geometry* mGeometry;
 		IMaterial* mMaterial;
 
 		MeshNode();
 		~MeshNode();
+
+
 
 	public:
 		SGE_DISABLE_COPY_ASSIGN(MeshNode)

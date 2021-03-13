@@ -35,15 +35,15 @@ namespace sge
        in smooth vec2 v_uvs;
 
        layout(binding = 0)uniform sampler2D colorMap;
-       layout(location = 1)uniform vec4 color;
 
        out vec4 PIXEL;
        void main()
        {
-          PIXEL = texture(colorMap, v_uvs) * color;
+// PIXEL = glm::vec4(1.0);// texture(colorMap, v_uvs);
+          PIXEL =  texture(colorMap, v_uvs);
        }
 
-     )";
+   )";
 
 		prog = graphicsAPI->CompileShaderProgram(vertexShaderStr, fragShaderStr);
 	}
@@ -62,9 +62,7 @@ namespace sge
 		for (size_t i = 0; i < numrenderables; i++)
 		{
 			const auto renderNode = renderables[i];
-
 			const auto material = static_cast<TextureMaterial*>(renderNode->GetMaterial());
-			assert(material);
 
 			const auto geom = renderNode->GetGeometry();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -74,15 +72,14 @@ namespace sge
 
 			glUseProgram(prog);
 
+			 
+			assert(material->GetDiffuseMap()->handle);
 			glBindMultiTextureEXT(GL_TEXTURE0, GL_TEXTURE_2D, material->GetDiffuseMap()->handle);
-
-			glProgramUniform4fv(prog, 1, 1, &material->GetDiffuseColor()[0]);
 
 			glProgramUniformMatrix4fv(prog, 0, 1, GL_FALSE,
 				&(currentCamera->GetProjection() * currentCamera->GetView() * renderNode->GetWorldMatrix())[0][0]);
 
 			glDrawArrays(geom->mDrawType, 0, geom->mNumVertices);
-			
 
 		}
 

@@ -24,7 +24,6 @@ namespace sge
 		for (auto tex : mTextures)
 		{
 			glDeleteTextures(1, &tex->handle);
-			delete tex;
 		}
 	}
 

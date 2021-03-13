@@ -11,7 +11,6 @@ namespace sge
 	{
 		friend class Scene;
 		Geometry* mGeometry;
-		IMaterial* mMaterial;
 
 		MeshNode();
 		~MeshNode();
@@ -28,15 +27,7 @@ namespace sge
 			return mGeometry;
 		}
 
-		void SetMaterial(IMaterial* material)
-		{
-			mMaterial = material;
-		}
-
-		IMaterial* GetMaterial()
-		{
-			return mMaterial;
-		}
+		void SetMaterial() {}
 
 
 

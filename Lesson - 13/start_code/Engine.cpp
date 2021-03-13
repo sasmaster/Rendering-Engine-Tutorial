@@ -17,7 +17,7 @@
 #include "MeshNode.h"
 #include "CameraNode.h"
 #include "Renderer.h"
-#include "TextureMaterial.h"
+
 
 
 #define WIN_W 1280
@@ -68,13 +68,8 @@ int main()
 
 	 
 
-	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png",true);
+	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png",false);
 
-
-	TextureMaterial mat;
-	mat.SetDiffuseMap(texture);
-	mat.SetDiffuseColor(1.0f, 0.0f, 0.0f, 1.0f);
-	meshNode1->SetMaterial(&mat);
 
 	//....  upload to gpu 
 

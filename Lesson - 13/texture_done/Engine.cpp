@@ -20,6 +20,7 @@
 #include "TextureMaterial.h"
 
 
+
 #define WIN_W 1280
 #define WIN_H 720
 
@@ -68,14 +69,11 @@ int main()
 
 	 
 
-	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png",true);
+	auto texture =  graphicsAPI->LoadTexture("assets/lena_color_512.png",false);
 
-
-	TextureMaterial mat;
-	mat.SetDiffuseMap(texture);
-	mat.SetDiffuseColor(1.0f, 0.0f, 0.0f, 1.0f);
-	meshNode1->SetMaterial(&mat);
-
+	TextureMaterial texMat;
+	texMat.SetDiffuseMap(texture);
+	meshNode1->SetMaterial(&texMat);
 	//....  upload to gpu 
 
   
